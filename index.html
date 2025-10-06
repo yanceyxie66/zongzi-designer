@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>粽子设计器 - 在线版</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f7f7f7; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 500px; }
+        h1 { color: #333; }
+        label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: #555; text-align: left; }
+        select, button { width: 100%; padding: 12px; margin-bottom: 15px; font-size: 16px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; cursor: pointer; border: none; font-weight: bold; transition: background-color 0.3s; margin-top: 20px;}
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #999; cursor: not-allowed; }
+        #status { color: #555; min-height: 24px; }
+        #resultImage { max-width: 100%; margin-top: 15px; border-radius: 8px; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>设计我的专属粽子 (在线版)</h1>
+
+        <label for="flavor">选择风味:</label>
+        <select id="flavor">
+            <option value="经典鲜肉粽">经典鲜肉粽</option>
+            <option value="咸蛋黄肉粽">咸蛋黄肉粽</option>
+            <option value="香菇卤肉粽">香菇卤肉粽</option>
+            <option value="甜蜜豆沙粽">甜蜜豆沙粽</option>
+            <option value="水晶蜜枣粽">水晶蜜枣粽</option>
+            <option value="麻辣牛肉粽">麻辣牛肉粽</option>
+            <option value="冰皮榴莲粽">冰皮榴莲粽</option>
+        </select>
+
+        <label for="ingredients">添加特色食材:</label>
+        <select id="ingredients">
+            <option value="饱满的虾仁">虾仁</option>
+            <option value="大块的香菇">香菇</option>
+            <option value="金黄的栗子">栗子</option>
+            <option value="喷香的烤鸭">烤鸭</option>
+            <option value="整颗鲍鱼">整颗鲍鱼</option>
+            <option value="浓郁的榴莲果肉">浓郁的榴莲果肉</option>
+            <option value="不加额外食材">无</option>
+        </select>
+
+        <label for="wrapping">选择包法:</label>
+        <select id="wrapping">
+            <option value="翠绿的粽叶包裹，经典的三角金字塔形状">经典三角</option>
+            <option value="新鲜的竹叶包裹，长条枕头形状">长条枕头</option>
+            <option value="清香的荷叶包裹，四角方正形状">四角方粽</option>
+            <option value="半透明的冰皮包裹，小巧玲珑">半透明冰皮</option>
+        </select>
+        
+        <label for="style">选择生成风格:</label>
+        <select id="style">
+            <option value="none">照片写实风格</option>
+            <option value="16">水墨画风格</option>
+            <option value="26">古风二次元</option>
+            <option value="8">赛博朋克风格</option>
+            <option value="5">像素风格</option>
+            <option value="4">水彩风格</option>
+            <option value="17">油画风格</option>
+        </select>
+
+        <button id="generateBtn" onclick="generateZongzi()">生成设计图</button>
+        <p id="status">点击按钮开始创作...</p>
+        <img id="resultImage" src="" style="display:none;">
+    </div>
+
+    <script>
+        const generateBtn = document.getElementById('generateBtn');
+        const statusEl = document.getElementById('status');
+        const resultImageEl = document.getElementById('resultImage');
+        const flavorSelect = document.getElementById('flavor');
+
+        flavorSelect.addEventListener('change', function(event) {
+            if (event.target.value === '冰皮榴莲粽') {
+                document.getElementById('ingredients').value = '浓郁的榴莲果肉';
+                document.getElementById('wrapping').value = '半透明的冰皮包裹，小巧玲珑';
+            }
+        });
+
+        async function generateZongzi() {
+            generateBtn.disabled = true;
+            statusEl.textContent = "正在连接云端服务器，请稍候...";
+            resultImageEl.style.display = 'none';
+
+            const flavor = document.getElementById('flavor').value;
+            const ingredients = document.getElementById('ingredients').value;
+            const wrapping = document.getElementById('wrapping').value;
+
+            let prompt = `特写镜头，一个精美的${flavor}，${wrapping}。`;
+            if (ingredients !== "不加额外食材") {
+                prompt += `能清晰看到里面有${ingredients}。`;
+            }
+            prompt += "富有食欲。";
+
+            const style = document.getElementById('style').value;
+            let bodyPayload = { prompt: prompt };
+
+            if (style !== "none") {
+                bodyPayload.style = style;
+                prompt = prompt.replace("照片级画-质，色彩鲜艳，", "");
+                bodyPayload.prompt = prompt;
+            } else {
+                 bodyPayload.prompt += "美食摄影, 照片级画质, 色彩鲜艳。";
+            }
+
+            try {
+                // 这个地址在Zeabur上会自动找到后端服务，无需修改
+                const response = await fetch('/generate-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bodyPayload),
+                });
+
+                if (!response.ok) throw new Error('服务器返回错误');
+                const result = await response.json();
+
+                if (result.image) {
+                    resultImageEl.src = `data:image/png;base64,${result.image}`;
+                    resultImageEl.style.display = 'block';
+                    statusEl.textContent = "生成成功！";
+                } else {
+                    throw new Error(result.error || "未收到图片");
+                }
+            } catch (error) {
+                statusEl.textContent = `生成失败: ${error.message}`;
+            } finally {
+                generateBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
