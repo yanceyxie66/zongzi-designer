@@ -2,111 +2,127 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>粽子设计器 - 在线版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创意粽子工坊</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f7f7f7; margin: 0; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 500px; }
-        h1 { color: #333; }
-        label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: #555; text-align: left; }
-        select, button { width: 100%; padding: 12px; margin-bottom: 15px; font-size: 16px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
-        button { background-color: #007bff; color: white; cursor: pointer; border: none; font-weight: bold; transition: background-color 0.3s; margin-top: 20px;}
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f7f7f7; margin: 0; padding: 20px; box-sizing: border-box; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px Vercel.app30px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 500px; box-sizing: border-box; }
+        h1 { color: #333; font-size: 1.8em; margin-bottom: 25px; }
+        .step { text-align: left; margin-bottom: 20px; }
+        .step-label { display: block; margin-bottom: 10px; font-weight: bold; color: #555; font-size: 1.1em; }
+        select, input[type="text"], button { width: 100%; padding: 12px; margin-bottom: 15px; font-size: 16px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; cursor: pointer; border: none; font-weight: bold; transition: background-color 0.3s; margin-top: 20px; }
         button:hover { background-color: #0056b3; }
         button:disabled { background-color: #999; cursor: not-allowed; }
-        #status { color: #555; min-height: 24px; }
-        #resultImage { max-width: 100%; margin-top: 15px; border-radius: 8px; border: 1px solid #eee; }
+        .checkbox-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .checkbox-item { display: flex; align-items: center; background-color: #f9f9f9; padding: 10px; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; }
+        .checkbox-item:hover { background-color: #f0f0f0; }
+        .checkbox-item input { margin-right: 10px; width: auto; accent-color: #007bff; }
+        #status { color: #555; min-height: 24px; font-size: 0.9em; margin-top: 15px; }
+        #result-display { margin-top: 20px; }
+        #resultImage { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #eee; }
+        #zongziNameDisplay { font-size: 1.3em; font-weight: bold; color: #333; margin-top: 15px; word-wrap: break-word; }
+        @media (max-width: 600px) {
+            body { padding: 15px; }
+            .container { padding: 20px; }
+            h1 { font-size: 1.5em; }
+            .checkbox-group { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>设计我的专属粽子 (在线版)</h1>
+        <h1>创意粽子工坊</h1>
 
-        <label for="flavor">选择风味:</label>
-        <select id="flavor">
-            <option value="经典鲜肉粽">经典鲜肉粽</option>
-            <option value="咸蛋黄肉粽">咸蛋黄肉粽</option>
-            <option value="香菇卤肉粽">香菇卤肉粽</option>
-            <option value="甜蜜豆沙粽">甜蜜豆沙粽</option>
-            <option value="水晶蜜枣粽">水晶蜜枣粽</option>
-            <option value="麻辣牛肉粽">麻辣牛肉粽</option>
-            <option value="冰皮榴莲粽">冰皮榴莲粽</option>
-        </select>
+        <div class="step">
+            <label class="step-label" for="base">1. 选择核心基底:</label>
+            <select id="base">
+                <option value="酱香糯米鲜肉">酱香糯米鲜肉 (经典咸粽)</option>
+                <option value="绵密香甜红豆沙">绵密香甜红豆沙 (经典甜粽)</option>
+                <option value="丝滑香芋泥">丝滑香芋泥 (新潮甜粽)</option>
+                <option value="混合了紫米和燕麦的五谷米">健康五谷米 (养生风味)</option>
+            </select>
+        </div>
 
-        <label for="ingredients">添加特色食材:</label>
-        <select id="ingredients">
-            <option value="饱满的虾仁">虾仁</option>
-            <option value="大块的香菇">香菇</option>
-            <option value="金黄的栗子">栗子</option>
-            <option value="喷香的烤鸭">烤鸭</option>
-            <option value="整颗鲍鱼">整颗鲍鱼</option>
-            <option value="浓郁的榴莲果肉">浓郁的榴莲果肉</option>
-            <option value="不加额外食材">无</option>
-        </select>
+        <div class="step">
+            <label class="step-label">2. 添加灵魂配料 (可多选):</label>
+            <div id="ingredients" class="checkbox-group">
+                <div class="checkbox-item"><input type="checkbox" value="流油的咸蛋黄">咸蛋黄</div>
+                <div class="checkbox-item"><input type="checkbox" value="大块的红烧肉">红烧肉</div>
+                <div class="checkbox-item"><input type="checkbox" value="鲜美的香菇">香菇</div>
+                <div class="checkbox-item"><input type="checkbox" value="软糯的栗子">栗子</div>
+                <div class="checkbox-item"><input type="checkbox" value="整颗的瑶柱(干贝)">瑶柱干贝</div>
+                <div class="checkbox-item"><input type="checkbox" value="浓郁的黑松露酱">黑松露</div>
+                <div class="checkbox-item"><input type="checkbox" value="多汁的鲍鱼">鲍鱼</div>
+                <div class="checkbox-item"><input type="checkbox" value="香辣的小龙虾尾">麻辣小龙虾</div>
+                <div class="checkbox-item"><input type="checkbox" value="Q弹的黑糖珍珠">黑糖珍珠</div>
+                <div class="checkbox-item"><input type="checkbox" value="拉丝的芝士">拉丝芝士</div>
+                <div class="checkbox-item"><input type="checkbox" value="清甜的桂花蜜">桂花蜜</div>
+                <div class="checkbox-item"><input type="checkbox" value="冰凉的抹茶酱">冰凉抹茶</div>
+            </div>
+        </div>
 
-        <label for="wrapping">选择包法:</label>
-        <select id="wrapping">
-            <option value="翠绿的粽叶包裹，经典的三角金字塔形状">经典三角</option>
-            <option value="新鲜的竹叶包裹，长条枕头形状">长条枕头</option>
-            <option value="清香的荷叶包裹，四角方正形状">四角方粽</option>
-            <option value="半透明的冰皮包裹，小巧玲珑">半透明冰皮</option>
-        </select>
+        <div class="step">
+            <label class="step-label" for="wrapping">3. 选择外皮与形态:</label>
+            <select id="wrapping">
+                <option value="翠绿的粽叶包裹，经典的三角金字塔形状">经典三角粽叶</option>
+                <option value="晶莹剔透的水晶皮包裹，玲珑可爱">晶莹水晶皮</option>
+                <option value="新鲜的竹叶包裹，长条枕头形状">长条枕头粽叶</option>
+            </select>
+        </div>
+
+        <div class="step">
+            <label class="step-label" for="zongziName">4. 为你的作品命名:</label>
+            <input type="text" id="zongziName" placeholder="例如：宇宙无敌至尊粽">
+        </div>
+
+        <button id="generateBtn" onclick="generateZongzi()">开始创作！</button>
+        <p id="status"></p>
         
-        <label for="style">选择生成风格:</label>
-        <select id="style">
-            <option value="none">照片写实风格</option>
-            <option value="16">水墨画风格</option>
-            <option value="26">古风二次元</option>
-            <option value="8">赛博朋克风格</option>
-            <option value="5">像素风格</option>
-            <option value="4">水彩风格</option>
-            <option value="17">油画风格</option>
-        </select>
-
-        <button id="generateBtn" onclick="generateZongzi()">生成设计图</button>
-        <p id="status">点击按钮开始创作...</p>
-        <img id="resultImage" src="" style="display:none;">
+        <div id="result-display" style="display:none;">
+            <h2 id="zongziNameDisplay"></h2>
+            <img id="resultImage" src="">
+        </div>
     </div>
 
     <script>
         const generateBtn = document.getElementById('generateBtn');
         const statusEl = document.getElementById('status');
+        const resultDisplayEl = document.getElementById('result-display');
         const resultImageEl = document.getElementById('resultImage');
-        const flavorSelect = document.getElementById('flavor');
-
-        flavorSelect.addEventListener('change', function(event) {
-            if (event.target.value === '冰皮榴莲粽') {
-                document.getElementById('ingredients').value = '浓郁的榴莲果肉';
-                document.getElementById('wrapping').value = '半透明的冰皮包裹，小巧玲珑';
-            }
-        });
+        const zongziNameDisplayEl = document.getElementById('zongziNameDisplay');
 
         async function generateZongzi() {
             generateBtn.disabled = true;
-            statusEl.textContent = "正在连接云端服务器，请稍候...";
-            resultImageEl.style.display = 'none';
+            statusEl.textContent = "正在连接云端工坊，请稍候...";
+            resultDisplayEl.style.display = 'none';
 
-            const flavor = document.getElementById('flavor').value;
-            const ingredients = document.getElementById('ingredients').value;
+            // 1. 收集所有创意元素
+            const base = document.getElementById('base').value;
             const wrapping = document.getElementById('wrapping').value;
+            const customName = document.getElementById('zongziName').value.trim();
 
-            let prompt = `特写镜头，一个精美的${flavor}，${wrapping}。`;
-            if (ingredients !== "不加额外食材") {
-                prompt += `能清晰看到里面有${ingredients}。`;
+            const selectedIngredients = [];
+            document.querySelectorAll('#ingredients input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedIngredients.push(checkbox.value);
+            });
+
+            // 2. 动态组合 Prompt
+            let prompt = `特写镜头，一个精美的粽子，`;
+            prompt += `${wrapping}，`;
+            prompt += `里面是${base}基底，`;
+
+            if (selectedIngredients.length > 0) {
+                prompt += `能清晰看到里面还有${selectedIngredients.join("、")}等配料。`;
+            } else {
+                prompt += `馅料饱满。`;
             }
-            prompt += "富有食欲。";
+            prompt += "美食摄影, 照片级画质, 色彩鲜艳，富有食欲。";
 
-            const style = document.getElementById('style').value;
+            // 默认风格为写实
             let bodyPayload = { prompt: prompt };
 
-            if (style !== "none") {
-                bodyPayload.style = style;
-                prompt = prompt.replace("照片级画-质，色彩鲜艳，", "");
-                bodyPayload.prompt = prompt;
-            } else {
-                 bodyPayload.prompt += "美食摄影, 照片级画质, 色彩鲜艳。";
-            }
-
             try {
-                // 这个地址在Zeabur上会自动找到后端服务，无需修改
                 const response = await fetch('/generate-image', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -117,9 +133,12 @@
                 const result = await response.json();
 
                 if (result.image) {
+                    // 4. 展示作品
                     resultImageEl.src = `data:image/png;base64,${result.image}`;
-                    resultImageEl.style.display = 'block';
-                    statusEl.textContent = "生成成功！";
+                    // 如果学生没起名字，就给一个默认的
+                    zongziNameDisplayEl.textContent = customName || "我的创意粽子";
+                    resultDisplayEl.style.display = 'block';
+                    statusEl.textContent = "创作成功！";
                 } else {
                     throw new Error(result.error || "未收到图片");
                 }
