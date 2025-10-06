@@ -6,11 +6,11 @@
     <title>创意粽子工坊</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f7f7f7; margin: 0; padding: 20px; box-sizing: border-box; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px Vercel.app30px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 500px; box-sizing: border-box; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 500px; box-sizing: border-box; }
         h1 { color: #333; font-size: 1.8em; margin-bottom: 25px; }
         .step { text-align: left; margin-bottom: 20px; }
         .step-label { display: block; margin-bottom: 10px; font-weight: bold; color: #555; font-size: 1.1em; }
-        select, input[type="text"], button { width: 100%; padding: 12px; margin-bottom: 15px; font-size: 16px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        input[type="text"], button { width: 100%; padding: 12px; margin-bottom: 15px; font-size: 16px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
         button { background-color: #007bff; color: white; cursor: pointer; border: none; font-weight: bold; transition: background-color 0.3s; margin-top: 20px; }
         button:hover { background-color: #0056b3; }
         button:disabled { background-color: #999; cursor: not-allowed; }
@@ -22,6 +22,28 @@
         #result-display { margin-top: 20px; }
         #resultImage { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #eee; }
         #zongziNameDisplay { font-size: 1.3em; font-weight: bold; color: #333; margin-top: 15px; word-wrap: break-word; }
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #007bff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: #fff;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4H19a17.6%2017.6%200%200%200-13.6%206.4c-3.1%203.1-4.7%207.2-4.7%2011.3s1.6%208.2%204.7%2011.3l139.2%20139.2c3.1%203.1%207.2%204.7%2011.3%204.7s8.2-1.6%2011.3-4.7l139.2-139.2c3.1-3.1%204.7-7.2%204.7-11.3s-1.6-8.2-4.7-11.3z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+            padding-right: 40px;
+        }
+
         @media (max-width: 600px) {
             body { padding: 15px; }
             .container { padding: 20px; }
@@ -65,9 +87,14 @@
         <div class="step">
             <label class="step-label" for="wrapping">3. 选择外皮与形态:</label>
             <select id="wrapping">
-                <option value="翠绿的粽叶包裹，经典的三角金字塔形状">经典三角粽叶</option>
-                <option value="晶莹剔透的水晶皮包裹，玲珑可爱">晶莹水晶皮</option>
-                <option value="新鲜的竹叶包裹，长条枕头形状">长条枕头粽叶</option>
+                <option value="翠绿的粽叶包裹，经典的三角金字塔形状">经典三角粽 (粽叶)</option>
+                <option value="晶莹剔透的水晶皮包裹，玲珑可爱">晶莹水晶皮 (甜品)</option>
+                <option value="用粽叶包裹，呈细长尖锐的牛角形状">牛角粽 (细长尖锐)</option>
+                <option value="用粽叶包裹，头部翘起，形态酷似一艘乌篷船">乌镇船头粽 (船形)</option>
+                <option value="用多张粽叶包裹，形成超过20厘米的超长圆柱形状">遂昌长粽 (超长圆柱)</option>
+                <option value="并非用粽叶，而是用新鲜的竹筒作为容器包裹，呈完美的圆柱形状">云南竹筒粽 (竹筒形)</option>
+                <option value="用粽叶包裹，呈厚实的长方体板砖形状">山东板砖粽 (板砖形)</option>
+                <option value="用粽叶包裹，造型独特，中间高高隆起，形似驼峰">广西驼背粽 (驼峰状)</option>
             </select>
         </div>
 
@@ -75,10 +102,12 @@
             <label class="step-label" for="zongziName">4. 为你的作品命名:</label>
             <input type="text" id="zongziName" placeholder="例如：宇宙无敌至尊粽">
         </div>
-
-        <button id="generateBtn" onclick="generateZongzi()">开始创作！</button>
-        <p id="status"></p>
         
+        <button id="generateBtn" onclick="generateZongzi()">开始创作！</button>
+        <div id="loadingIndicator" style="display: none;">
+            <div class="loader"></div>
+            <p id="status">创作过程大约需要1分钟，请耐心等待...</p>
+        </div>
         <div id="result-display" style="display:none;">
             <h2 id="zongziNameDisplay"></h2>
             <img id="resultImage" src="">
@@ -87,17 +116,17 @@
 
     <script>
         const generateBtn = document.getElementById('generateBtn');
+        const loadingIndicator = document.getElementById('loadingIndicator');
         const statusEl = document.getElementById('status');
         const resultDisplayEl = document.getElementById('result-display');
         const resultImageEl = document.getElementById('resultImage');
         const zongziNameDisplayEl = document.getElementById('zongziNameDisplay');
 
         async function generateZongzi() {
-            generateBtn.disabled = true;
-            statusEl.textContent = "正在连接云端工坊，请稍候...";
+            generateBtn.style.display = 'none';
+            loadingIndicator.style.display = 'block';
             resultDisplayEl.style.display = 'none';
 
-            // 1. 收集所有创意元素
             const base = document.getElementById('base').value;
             const wrapping = document.getElementById('wrapping').value;
             const customName = document.getElementById('zongziName').value.trim();
@@ -107,11 +136,7 @@
                 selectedIngredients.push(checkbox.value);
             });
 
-            // 2. 动态组合 Prompt
-            let prompt = `特写镜头，一个精美的粽子，`;
-            prompt += `${wrapping}，`;
-            prompt += `里面是${base}基底，`;
-
+            let prompt = `特写镜头，一个精美的粽子，${wrapping}，里面是${base}基底，`;
             if (selectedIngredients.length > 0) {
                 prompt += `能清晰看到里面还有${selectedIngredients.join("、")}等配料。`;
             } else {
@@ -119,7 +144,6 @@
             }
             prompt += "美食摄影, 照片级画质, 色彩鲜艳，富有食欲。";
 
-            // 默认风格为写实
             let bodyPayload = { prompt: prompt };
 
             try {
@@ -133,9 +157,7 @@
                 const result = await response.json();
 
                 if (result.image) {
-                    // 4. 展示作品
                     resultImageEl.src = `data:image/png;base64,${result.image}`;
-                    // 如果学生没起名字，就给一个默认的
                     zongziNameDisplayEl.textContent = customName || "我的创意粽子";
                     resultDisplayEl.style.display = 'block';
                     statusEl.textContent = "创作成功！";
@@ -145,7 +167,8 @@
             } catch (error) {
                 statusEl.textContent = `生成失败: ${error.message}`;
             } finally {
-                generateBtn.disabled = false;
+                loadingIndicator.style.display = 'none';
+                generateBtn.style.display = 'block';
             }
         }
     </script>
