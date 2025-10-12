@@ -10,32 +10,22 @@
         h1 { color: #333; font-size: 1.8em; margin-bottom: 25px; }
         .step { text-align: left; margin-bottom: 20px; }
         .step-label { display: block; margin-bottom: 10px; font-weight: bold; color: #555; font-size: 1.1em; }
-        input[type="text"], button { width: 100%; padding: 12px; margin-bottom: 15px; font-size: 16px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+        select, button { width: 100%; padding: 12px; margin-bottom: 15px; font-size: 16px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
         button { background-color: #007bff; color: white; cursor: pointer; border: none; font-weight: bold; transition: background-color 0.3s; margin-top: 20px; }
         button:hover { background-color: #0056b3; }
         button:disabled { background-color: #999; cursor: not-allowed; }
-        .checkbox-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .checkbox-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         .checkbox-item { display: flex; align-items: center; background-color: #f9f9f9; padding: 10px; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; }
         .checkbox-item:hover { background-color: #f0f0f0; }
         .checkbox-item input { margin-right: 10px; width: auto; accent-color: #007bff; }
-        #status { color: #555; min-height: 24px; font-size: 0.9em; margin-top: 15px; }
+        #status, .loading-text { color: #555; font-size: 0.9em; margin-top: 15px; line-height: 1.5; }
         #result-display { margin-top: 20px; }
         #resultImage { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #eee; }
-        #zongziNameDisplay { font-size: 1.3em; font-weight: bold; color: #333; margin-top: 15px; word-wrap: break-word; }
         .loader { border: 5px solid #f3f3f3; border-top: 5px solid #007bff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         select {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            box-sizing: border-box;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
             background-color: #fff;
             background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4H19a17.6%2017.6%200%200%200-13.6%206.4c-3.1%203.1-4.7%207.2-4.7%2011.3s1.6%208.2%204.7%2011.3l139.2%20139.2c3.1%203.1%207.2%204.7%2011.3%204.7s8.2-1.6%2011.3-4.7l139.2-139.2c3.1-3.1%204.7-7.2%204.7-11.3s-1.6-8.2-4.7-11.3z%22%2F%3E%3C%2Fsvg%3E');
             background-repeat: no-repeat;
@@ -48,7 +38,7 @@
             body { padding: 15px; }
             .container { padding: 20px; }
             h1 { font-size: 1.5em; }
-            .checkbox-group { grid-template-columns: 1fr; }
+            .checkbox-group { grid-template-columns: 1fr 1fr; } /* 在手机上改为两列 */
         }
     </style>
 </head>
@@ -59,28 +49,39 @@
         <div class="step">
             <label class="step-label" for="base">1. 选择核心基底:</label>
             <select id="base">
-                <option value="酱香糯米鲜肉">酱香糯米鲜肉 (经典咸粽)</option>
-                <option value="绵密香甜红豆沙">绵密香甜红豆沙 (经典甜粽)</option>
-                <option value="丝滑香芋泥">丝滑香芋泥 (新潮甜粽)</option>
-                <option value="混合了紫米和燕麦的五谷米">健康五谷米 (养生风味)</option>
+                <option value="酱香糯米">酱香糯米 (经典之选)</option>
+                <option value="白糯原米">白糯原米 (质朴之选)</option>
+                <option value="五谷杂粮米">五谷杂粮米 (养生之选)</option>
+                <option value="水晶西米">水晶西米 (创意之选)</option>
+                <option value="绵密薯芋泥">绵密薯芋泥 (温柔之选)</option>
+                <option value="浓郁红豆沙">浓郁红豆沙 (甜蜜之选)</option>
             </select>
         </div>
 
         <div class="step">
             <label class="step-label">2. 添加灵魂配料 (可多选):</label>
             <div id="ingredients" class="checkbox-group">
-                <div class="checkbox-item"><input type="checkbox" value="流油的咸蛋黄">咸蛋黄</div>
-                <div class="checkbox-item"><input type="checkbox" value="大块的红烧肉">红烧肉</div>
-                <div class="checkbox-item"><input type="checkbox" value="鲜美的香菇">香菇</div>
-                <div class="checkbox-item"><input type="checkbox" value="软糯的栗子">栗子</div>
-                <div class="checkbox-item"><input type="checkbox" value="整颗的瑶柱(干贝)">瑶柱干贝</div>
-                <div class="checkbox-item"><input type="checkbox" value="浓郁的黑松露酱">黑松露</div>
-                <div class="checkbox-item"><input type="checkbox" value="多汁的鲍鱼">鲍鱼</div>
-                <div class="checkbox-item"><input type="checkbox" value="香辣的小龙虾尾">麻辣小龙虾</div>
-                <div class="checkbox-item"><input type="checkbox" value="Q弹的黑糖珍珠">黑糖珍珠</div>
-                <div class="checkbox-item"><input type="checkbox" value="拉丝的芝士">拉丝芝士</div>
-                <div class="checkbox-item"><input type="checkbox" value="清甜的桂花蜜">桂花蜜</div>
-                <div class="checkbox-item"><input type="checkbox" value="冰凉的抹茶酱">冰凉抹茶</div>
+                <div class="checkbox-item"><input type="checkbox" value="金华火腿">金华火腿</div>
+                <div class="checkbox-item"><input type="checkbox" value="咸蛋黄">咸蛋黄</div>
+                <div class="checkbox-item"><input type="checkbox" value="香菇">香菇</div>
+                <div class="checkbox-item"><input type="checkbox" value="红烧肉">红烧肉</div>
+                <div class="checkbox-item"><input type="checkbox" value="鲍鱼">鲍鱼</div>
+                <div class="checkbox-item"><input type="checkbox" value="燕窝">燕窝</div>
+                <div class="checkbox-item"><input type="checkbox" value="枸杞">枸杞</div>
+                <div class="checkbox-item"><input type="checkbox" value="桂圆">桂圆</div>
+                <div class="checkbox-item"><input type="checkbox" value="莲子">莲子</div>
+                <div class="checkbox-item"><input type="checkbox" value="蜜枣">蜜枣</div>
+                <div class="checkbox-item"><input type="checkbox" value="麻辣小龙虾">麻辣小龙虾</div>
+                <div class="checkbox-item"><input type="checkbox" value="虾皮">虾皮</div>
+                <div class="checkbox-item"><input type="checkbox" value="瑶柱干贝">瑶柱干贝</div>
+                <div class="checkbox-item"><input type="checkbox" value="黑糖珍珠">黑糖珍珠</div>
+                <div class="checkbox-item"><input type="checkbox" value="拉丝芝士">拉丝芝士</div>
+                <div class="checkbox-item"><input type="checkbox" value="冰凉抹茶">冰凉抹茶</div>
+                <div class="checkbox-item"><input type="checkbox" value="桂花蜜">桂花蜜</div>
+                <div class="checkbox-item"><input type="checkbox" value="爆浆巧克力">爆浆巧克力</div>
+                <div class="checkbox-item"><input type="checkbox" value="菊花茶冻">菊花茶冻</div>
+                <div class="checkbox-item"><input type="checkbox" value="梅干菜">梅干菜</div>
+                <div class="checkbox-item"><input type="checkbox" value="南瓜">南瓜</div>
             </div>
         </div>
 
@@ -88,28 +89,24 @@
             <label class="step-label" for="wrapping">3. 选择外皮与形态:</label>
             <select id="wrapping">
                 <option value="翠绿的粽叶包裹，经典的三角金字塔形状">经典三角粽 (粽叶)</option>
-                <option value="晶莹剔透的水晶皮包裹，玲珑可爱">晶莹水晶皮 (甜品)</option>
                 <option value="用粽叶包裹，呈细长尖锐的牛角形状">牛角粽 (细长尖锐)</option>
                 <option value="用粽叶包裹，头部翘起，形态酷似一艘乌篷船">乌镇船头粽 (船形)</option>
                 <option value="用多张粽叶包裹，形成超过20厘米的超长圆柱形状">遂昌长粽 (超长圆柱)</option>
                 <option value="并非用粽叶，而是用新鲜的竹筒作为容器包裹，呈完美的圆柱形状">云南竹筒粽 (竹筒形)</option>
                 <option value="用粽叶包裹，呈厚实的长方体板砖形状">山东板砖粽 (板砖形)</option>
-                <option value="用粽叶包裹，造型独特，中间高高隆起，形似驼峰">广西驼背粽 (驼峰状)</option>
             </select>
-        </div>
-
-        <div class="step">
-            <label class="step-label" for="zongziName">4. 为你的作品命名:</label>
-            <input type="text" id="zongziName" placeholder="例如：宇宙无敌至尊粽">
         </div>
         
         <button id="generateBtn" onclick="generateZongzi()">开始创作！</button>
+        
         <div id="loadingIndicator" style="display: none;">
             <div class="loader"></div>
-            <p id="status">创作过程大约需要1分钟，请耐心等待...</p>
+            <p class="loading-text">正在生成作品... 创作过程大约需要1分钟。</p>
+            <p class="loading-text"><b>请利用这段时间，为你的作品命名并设计一句话宣传语！</b></p>
         </div>
+        
         <div id="result-display" style="display:none;">
-            <h2 id="zongziNameDisplay"></h2>
+            <p id="status"></p>
             <img id="resultImage" src="">
         </div>
     </div>
@@ -120,7 +117,6 @@
         const statusEl = document.getElementById('status');
         const resultDisplayEl = document.getElementById('result-display');
         const resultImageEl = document.getElementById('resultImage');
-        const zongziNameDisplayEl = document.getElementById('zongziNameDisplay');
 
         async function generateZongzi() {
             generateBtn.style.display = 'none';
@@ -129,8 +125,6 @@
 
             const base = document.getElementById('base').value;
             const wrapping = document.getElementById('wrapping').value;
-            const customName = document.getElementById('zongziName').value.trim();
-
             const selectedIngredients = [];
             document.querySelectorAll('#ingredients input[type="checkbox"]:checked').forEach(checkbox => {
                 selectedIngredients.push(checkbox.value);
@@ -158,9 +152,8 @@
 
                 if (result.image) {
                     resultImageEl.src = `data:image/png;base64,${result.image}`;
-                    zongziNameDisplayEl.textContent = customName || "我的创意粽子";
                     resultDisplayEl.style.display = 'block';
-                    statusEl.textContent = "创作成功！";
+                    statusEl.textContent = "创作成功！现在可以展示你的命名和宣传语了。";
                 } else {
                     throw new Error(result.error || "未收到图片");
                 }
